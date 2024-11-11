@@ -3,7 +3,7 @@ from relationship_app.models import Author, Book, Library, Librarian
 def get_books_by_author(author_name):
    
         author = Author.objects.get(name=author_name)
-        books_by_author = Book.objects.filter(author = author)
+        books_by_author = Book.objects.filter(author=author)
         return books_by_author
 
 def get_books_in_library(library_name):
