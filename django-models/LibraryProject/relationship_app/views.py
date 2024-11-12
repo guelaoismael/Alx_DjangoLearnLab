@@ -3,6 +3,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
 
 from django.urls import  reverse_lazy
 
@@ -34,3 +36,24 @@ class register(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect(self.success_url)
+
+# Check role function
+def check_role(role):
+    def decorator(user):
+        return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role
+    return decorator
+
+# Vue Admin
+@user_passes_test(check_role('Admin'))
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+# Vue Bibliothécaire
+@user_passes_test(check_role('Librarian'))
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+# Vue Membre
+@user_passes_test(check_role('Member'))
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
