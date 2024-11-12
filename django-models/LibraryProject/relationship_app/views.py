@@ -44,16 +44,16 @@ def check_role(role):
     return decorator
 
 # Vue Admin
-@user_passes_test(check_role('Admin'))
+@user_passes_test(check_role('Admin'), login_url='/login/')
 def Admin(request):
     return render(request, 'relationship_app/admin_view.html')
 
 # Vue Bibliothécaire
-@user_passes_test(check_role('Librarian'))
+@user_passes_test(check_role('Librarian'), login_url='/login/')
 def Librarian(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 # Vue Membre
-@user_passes_test(check_role('Member'))
+@user_passes_test(check_role('Member'), login_url='/login/')
 def Member(request):
     return render(request, 'relationship_app/member_view.html')
