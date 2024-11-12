@@ -45,15 +45,15 @@ def check_role(role):
 
 # Vue Admin
 @user_passes_test(check_role('Admin'))
-def admin_view(request):
+def Admin(request):
     return render(request, 'relationship_app/admin_view.html')
 
 # Vue Bibliothécaire
 @user_passes_test(check_role('Librarian'))
-def librarian_view(request):
+def Librarian(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 # Vue Membre
 @user_passes_test(check_role('Member'))
-def member_view(request):
+def Member(request):
     return render(request, 'relationship_app/member_view.html')
