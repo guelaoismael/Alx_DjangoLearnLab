@@ -41,3 +41,18 @@ class CustomUser(AbstractUser):
    profile_photo = models.ImageField()
 
    objects = CustomUserManager()
+  
+
+class Post(models.Model):
+   
+   title = models.CharField(max_length=100)
+   body = models.TextField()
+   publish_date = models.DateTimeField()
+
+   class Meta:
+      permissions = [
+         ("can_view", "Can view the posts"),
+         ("can_create", "Can create post"),
+         ("can_edit", "Can edit the posts"),
+         ("can_delete", "Can delete the posts"),
+      ]
