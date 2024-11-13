@@ -1,7 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
-from .models import Post
+from .models import Post, Book
+
+# @permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+   
+     return HttpResponse("Book list!")
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def post_list(request):
