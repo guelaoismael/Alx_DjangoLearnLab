@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 from .models import Book
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -6,6 +7,13 @@ from rest_framework import status
 
 class BookApiTestCase(APITestCase):
   def setUp(self):
+   
+   self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+   self.login_url = reverse('login')
+   
    self.book1 = Book.objects.create(
       title = "Book 1",
       author = "Anonymous", 
@@ -19,6 +27,16 @@ class BookApiTestCase(APITestCase):
     )
    self.url = reverse('book-list')
 
+
+  def test_authenticated_access(self):
+    # Log in the test user
+    login_successful = self.client.login(username='testuser', password='testpassword')
+    self.assertTrue(login_successful)
+
+    # Make an authenticated request
+    response = self.client.get(reverse('some_authenticated_view'))
+    self.assertEqual(response.status_code, 200)
+    
   def test_create_book(self):
       # create_url = reverse('book-create')
       data = {
