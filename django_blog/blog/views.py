@@ -15,7 +15,7 @@ def registration_view(request):
             return redirect('login')
     else:
         form = CreationForm()
-    return render(request, 'blog/signup.html', {'form': form})
+    return render(request, 'blog/register.html', {'form': form})
 
 
 @login_required
