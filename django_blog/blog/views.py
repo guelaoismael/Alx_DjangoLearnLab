@@ -95,7 +95,7 @@ class CommentListView(generic.ListView):
     template_name = "TEMPLATE_NAME"
 
 
-class AddCommentView(generic.CreateView, LoginRequiredMixin):
+class CommentCreateView(generic.CreateView, LoginRequiredMixin):
    
    model = Comment
    fields = ['content']
@@ -109,7 +109,7 @@ class AddCommentView(generic.CreateView, LoginRequiredMixin):
        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_id']) 
        return super().form_valid(form)
    
-class EditCommentView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
+class CommentUpdateView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
    
    model = Comment
    fields = ['content']
