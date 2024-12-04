@@ -8,10 +8,10 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("profile/", profile_view, name="profile"),
     path("", profile_view, name="home"),
-    path('posts/', ListView.as_view(), name='posts'),
-    path('posts/new/', CreateView.as_view(), name='new-post'),
-    path('posts/<int:pk>/edit/', UpdateView.as_view(), name='update-post'),
-    path('posts/<int:pk>/',DetailView.as_view(), name='detail-post'),
-    path('posts/<int:pk>/delete/',DeleteView.as_view(), name='delete-post'),
+    path('post/', ListView.as_view(), name='posts'),
+    path('post/new/', CreateView.as_view(), name='new-post'),
+    path('post/<int:pk>/update/', UpdateView.as_view(), name='update-post'),
+    path('post/<int:pk>/',DetailView.as_view(), name='detail-post'),
+    path('post/<int:pk>/delete/',DeleteView.as_view(), name='delete-post'),
     
 ]
