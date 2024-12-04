@@ -33,7 +33,7 @@ def profile_view(request):
 
 class ListView(generic.ListView):
     model = Post
-    template_name = "blog/list_post.html"
+    template_name = "blog/listing_post.html"
     context_object_name = "posts"
 
 
@@ -41,7 +41,7 @@ class CreateView(generic.CreateView, LoginRequiredMixin):
     model = Post
     
     fields = ["title", "content"]
-    template_name = "blog/new_post.html"
+    template_name = "blog/creating_post.html"
     success_url = reverse_lazy('posts')
 
     def form_valid(self, form):
@@ -50,13 +50,13 @@ class CreateView(generic.CreateView, LoginRequiredMixin):
 
 class DetailView(generic.DetailView):
     model = Post
-    template_name = "blog/detail_post.html"
+    template_name = "blog/viewing_post.html"
 
 class UpdateView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
     model = Post
     
     fields = ["title", "content"]
-    template_name = "blog/update_post.html"
+    template_name = "blog/updating_post.html"
     success_url = reverse_lazy('posts')
 
     def form_valid(self, form):
@@ -65,7 +65,7 @@ class UpdateView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
 
 class DeleteView(generic.DeleteView, LoginRequiredMixin, UserPassesTestMixin):
     model = Post
-    template_name = "blog/delete_post.html"
+    template_name = "blog/deleting_post.html"
     success_url = reverse_lazy('posts')
 
 
