@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, UserProfileForm
+from .forms import PostForm, RegisterForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse, reverse_lazy
+from django.views import generic
+from .models import Post
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 
 def register_view(request):
@@ -24,3 +28,44 @@ def profile_view(request):
     else:
         form = UserProfileForm(instance=request.user)
     return render(request, 'blog/profile.html', {'form': form})
+
+
+
+class ListView(generic.ListView):
+    model = Post
+    template_name = "blog/list.html"
+    context_object_name = "posts"
+
+
+class CreateView(generic.CreateView, LoginRequiredMixin):
+    model = Post
+    
+    fields = ["title", "content"]
+    template_name = "blog/create.html"
+    success_url = reverse_lazy('posts')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class DetailView(generic.DetailView):
+    model = Post
+    template_name = "blog/detail.html"
+
+class UpdateView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
+    model = Post
+    
+    fields = ["title", "content"]
+    template_name = "blog/update.html"
+    success_url = reverse_lazy('posts')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class DeleteView(generic.DeleteView, LoginRequiredMixin, UserPassesTestMixin):
+    model = Post
+    template_name = "blog/delete.html"
+    success_url = reverse_lazy('posts')
+
+
