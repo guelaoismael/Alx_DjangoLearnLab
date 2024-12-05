@@ -3,7 +3,8 @@ from .forms import PostForm, RegisterForm, UserProfileForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.views import generic
-from .models import Post, Comment
+from .models import Post, Comment, Tag
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 
@@ -43,10 +44,21 @@ class CreateView(generic.CreateView, LoginRequiredMixin):
     fields = ["title", "content"]
     template_name = "blog/creating_post.html"
     success_url = reverse_lazy('posts')
+    
 
     def form_valid(self, form):
+       
         form.instance.author = self.request.user
-        return super().form_valid(form)
+
+        response = super().form_valid(form)
+        
+        tags_input = self.request.POST.get('tags', '')
+        if tags_input:
+            # Split tags by comma, strip whitespace, and create/get each tag
+            tag_list = [Tag.objects.get_or_create(name=tag.strip())[0] for tag in tags_input.split(',')]
+            self.object.tags.set(tag_list) 
+
+        return response
 
 class DetailView(generic.DetailView):
     model = Post
@@ -55,39 +67,33 @@ class DetailView(generic.DetailView):
 class UpdateView(generic.UpdateView, LoginRequiredMixin, UserPassesTestMixin):
     model = Post
     
-    fields = ["title", "content"]
+    fields = ["title", "content",]
     template_name = "blog/updating_post.html"
     success_url = reverse_lazy('posts')
 
     def form_valid(self, form):
+       
         form.instance.author = self.request.user
-        return super().form_valid(form)
 
+        response = super().form_valid(form)
+        
+        tags_input = self.request.POST.get('tags', '')
+        if tags_input:
+            # Split tags by comma, strip whitespace, and create/get each tag
+            tag_list = [Tag.objects.get_or_create(name=tag.strip())[0] for tag in tags_input.split(',')]
+            self.object.tags.set(tag_list) 
+
+        return response
+    
 class DeleteView(generic.DeleteView, LoginRequiredMixin, UserPassesTestMixin):
     model = Post
     template_name = "blog/deleting_post.html"
     success_url = reverse_lazy('posts')
 
-
-# class AddCommentView(generic.View):
-     
-#     def get(self, request, post_id):
-#         post = get_object_or_404(Post, id=post_id)
-#         form = CommentForm()
-#         return render(request, 'blog/comments/add_comment.html', {'form': form, 'post': post})
-
-#     def post(self, request, post_id):
-#         post = get_object_or_404(Post, id=post_id)
-#         form = CommentForm(request.POST)
-
-#         if form.is_valid():
-#             form.instance.author = request.user
-#             form.instance.post = post
-#             form.save()
-#             return redirect('detail-post', pk=post.id)
-#         return render(request, 'blog/comments/add_comment.html', {'form': form, 'post': post})
-
-
+def posts_by_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    posts = tag.posts.all() 
+    return render(request, 'posts_by_tag.html', {'tag': tag, 'posts': posts})
    
 
 class CommentListView(generic.ListView):
@@ -127,3 +133,16 @@ class CommentDeleteView(generic.DeleteView, LoginRequiredMixin, UserPassesTestMi
     def get_success_url(self):
       comment = self.get_object()
       return reverse_lazy('detail-post', kwargs={'pk': comment.post.pk})
+
+def search_posts(request):
+    query = request.GET.get('q')  # Get the search query
+    posts = Post.objects.all()
+
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})

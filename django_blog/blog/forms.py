@@ -1,7 +1,7 @@
 from django import forms 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 
 
 class RegisterForm(UserCreationForm):
@@ -17,9 +17,24 @@ class UserProfileForm(forms.ModelForm):
     fields = ["username", "email"]
 
 class PostForm(forms.ModelForm):
+
+  tags = forms.CharField(max_length=100, required=False)
+
+  def save(self, commit=True):
+    post = super().save(commit=False)
+
+    if commit:
+      post.save()
+    tag_names = self.cleaned_data_get('tags', '')
+    if tag_names:
+      tag_names = [name.strip() for name in tag_names.split(',')]
+      for name in tag_names:
+          tag, created = Tag.objects.get_or_create(name=name)
+          post.tags.add(tag)
+    return post
   class Meta:
     model = Post
-    fields = ["title", "content"]
+    fields = ["title", "content","tags"]
 
 class CommentForm(forms.ModelForm):
   class Meta:

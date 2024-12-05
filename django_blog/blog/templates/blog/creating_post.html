@@ -4,6 +4,10 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <div>
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text" name="tags" id="tags">
+    </div>
     <button type="submit">Post</button>
 </form>
 {% endblock content %}
