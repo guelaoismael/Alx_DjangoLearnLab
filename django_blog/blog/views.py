@@ -136,10 +136,9 @@ class CommentDeleteView(generic.DeleteView, LoginRequiredMixin, UserPassesTestMi
 
 def search_posts(request):
     query = request.GET.get('q')  # Get the search query
-    posts = Post.objects.all()
-
+    
     if query:
-        posts = posts.filter(
+        posts = Post.objects.filter(
             Q(title__icontains=query) |
             Q(content__icontains=query) |
             Q(tags__name__icontains=query)
