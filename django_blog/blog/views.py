@@ -96,6 +96,21 @@ def posts_by_tag(request, tag_id):
     return render(request, 'posts_by_tag.html', {'tag': tag, 'posts': posts})
    
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/posts_by_tag.html"  
+    context_object_name = "posts" 
+
+    def get_queryset(self):
+       
+        tag_name = self.kwargs.get("tag_name")
+        return Post.objects.filter(tags__name__icontains=tag_name)
+    
+    def get_context_data(self, **kwargs):
+        # Add the tag name to the context for template use
+        context = super().get_context_data(**kwargs)
+        context["tag_name"] = self.kwargs.get("tag_name")
+        return context
 class CommentListView(generic.ListView):
     model = Comment
     template_name = "TEMPLATE_NAME"
