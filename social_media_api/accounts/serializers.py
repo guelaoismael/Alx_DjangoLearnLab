@@ -1,5 +1,6 @@
 from .models import CustomUser
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,8 +26,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if CustomUser.objects.filter(email=self.validated_data['email']).exists():
             raise serializers.ValidationError({'error': 'Email already exists!'})
 
-        account = CustomUser(email=self.validated_data['email'], username=self.validated_data['username'])
+        # account = CustomUser(email=self.validated_data['email'], username=self.validated_data['username'])
+        
+        account = CustomUser.objects.create_user(
+            username=self.validated_data['username'],
+            email=self.validated_data['email']
+        )
+
         account.set_password(password)
         account.save()
+
+        Token.objects.create(user=account)
 
         return account
