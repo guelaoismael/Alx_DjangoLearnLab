@@ -41,8 +41,9 @@ class LikePostView(mixins.CreateModelMixin, generics.GenericAPIView):
    permission_classes = [permissions.IsAuthenticated]
 
    def post(self, request, *args, **kwargs):
+      pk = self.kwargs['pk']
       try:
-        post = Post.objects.get(pk = self.kwargs['pk'])
+       post = generics.get_object_or_404(Post, pk = pk)
       except Post.DoesNotExist:
          return Response({"error": "This post doesn't exist."}, status=status.HTTP_404_NOT_FOUND)
       
@@ -51,7 +52,8 @@ class LikePostView(mixins.CreateModelMixin, generics.GenericAPIView):
       if Like.objects.filter(post=post, user=user).exists():
         return Response({"error": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
       
-      Like.objects.create(user=user, post=post)
+      # Like.objects.create(user=user, post=post)
+      Like.objects.get_or_create(user=user, post=post)
 
       if post.author != user:
         Notification.objects.create(
@@ -71,8 +73,9 @@ class UnlikePostView(mixins.CreateModelMixin, generics.GenericAPIView):
   permission_classes = [permissions.IsAuthenticated]
 
   def post(self, request, *args, **kwargs):
+    pk = self.kwargs['pk']
     try:
-      post = Post.objects.get(pk = self.kwargs['pk'])
+      post = generics.get_object_or_404(Post, pk = pk)
     except Post.DoesNotExist:
         return Response({"error": "This post doesn't exist."}, status=status.HTTP_404_NOT_FOUND)
       
