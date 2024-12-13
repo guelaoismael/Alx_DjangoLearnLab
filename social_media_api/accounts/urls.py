@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from .views import registration_view, profile_view, follow_user, unfollow_user, FollowUser, UnfollowUser
+from .views import registration_view, profile_view, FollowUser, UnfollowUser
 
 
 urlpatterns = [
