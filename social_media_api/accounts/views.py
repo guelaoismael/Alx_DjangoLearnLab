@@ -43,48 +43,48 @@ def registration_view(request):
 def profile_view(request):
     pass
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def follow_user(request, pk):
-    # User = settings.AUTH_USER_MODEL  
-    if request.method != "POST":
-        return Response({"error": "This endpoint only supports POST requests."}, status=405)
+# @api_view(['POST'])
+# @permission_classes([permissions.IsAuthenticated])
+# def follow_user(request, pk):
+#     # User = settings.AUTH_USER_MODEL  
+#     if request.method != "POST":
+#         return Response({"error": "This endpoint only supports POST requests."}, status=405)
     
     
-    if request.method == 'POST':
+#     if request.method == 'POST':
 
-        try:
-            user_to_follow = User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            return Response({"error": "The user that you want to follow doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+#         try:
+#             user_to_follow = User.objects.get(pk=pk)
+#         except User.DoesNotExist:
+#             return Response({"error": "The user that you want to follow doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
         
-        request.user.following.add(user_to_follow)
+#         request.user.following.add(user_to_follow)
         
-        return Response({"succes": "You follow now the user"}, status=status.HTTP_200_OK)
+#         return Response({"succes": "You follow now the user"}, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def unfollow_user(request, pk):
-    # User = settings.AUTH_USER_MODEL  
-    if request.method != "POST":
-        return Response({"error": "This endpoint only supports POST requests."}, status=405)
+# @api_view(['POST'])
+# @permission_classes([permissions.IsAuthenticated])
+# def unfollow_user(request, pk):
+#     # User = settings.AUTH_USER_MODEL  
+#     if request.method != "POST":
+#         return Response({"error": "This endpoint only supports POST requests."}, status=405)
     
     
-    if request.method == 'POST':
+#     if request.method == 'POST':
 
-        try:
-            user_to_unfollow = User.objects.get(pk=pk)
+#         try:
+#             user_to_unfollow = User.objects.get(pk=pk)
             
-        except User.DoesNotExist:
-            return Response({"error": "The user that you want to unfollow doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+#         except User.DoesNotExist:
+#             return Response({"error": "The user that you want to unfollow doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
         
-        if user_to_unfollow not in request.user.following.all():
-            return Response({"error": "This user doesn't exist in your following list"}, status=status.HTTP_200_OK)
+#         if user_to_unfollow not in request.user.following.all():
+#             return Response({"error": "This user doesn't exist in your following list"}, status=status.HTTP_200_OK)
     
-        request.user.following.remove(user_to_unfollow)
+#         request.user.following.remove(user_to_unfollow)
         
-        return Response({"succes": "You unfollow the user"}, status=status.HTTP_200_OK)
+#         return Response({"succes": "You unfollow the user"}, status=status.HTTP_200_OK)
 
 
 class FollowUser(mixins.CreateModelMixin,generics.GenericAPIView):
