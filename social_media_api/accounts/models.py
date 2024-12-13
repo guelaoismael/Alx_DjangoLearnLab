@@ -29,6 +29,7 @@ class CustomUser(AbstractUser):
    
    bio = models.TextField()
    profile_picture = models.ImageField(null=True, blank=True)
-   followers = models.ManyToManyField("self", symmetrical=False)
+   followers = models.ManyToManyField("self", symmetrical=False, related_name="following")
+   # following = models.ManyToManyField("self", symmetrical=False)
 
    objects = CustomUserManager()
